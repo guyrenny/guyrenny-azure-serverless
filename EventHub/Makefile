@@ -1,12 +1,17 @@
 export AZURE_REGION ?= westeurope
 export AZURE_RESOURCE_GROUP ?= AzureFunctionsCoralogix
-export AZURE_FUNCTION_NAME ?= coralogixblob
+export AZURE_FUNCTION_NAME ?= coralogixhubfunc
 export AZURE_STORAGE_CONNECTION ?= ""
+
+export AZURE_EVENTHUB_CONNECTION ?= ""
 
 export CORALOGIX_PRIVATE_KEY ?= ""
 export CORALOGIX_APP_NAME ?= Azure
-export CORALOGIX_SUB_SYSTEM ?= blob
-export NEWLINE_PATTERN ?= (?:\r\n|\r|\n)
+export CORALOGIX_SUB_SYSTEM ?= eventhub
+
+# Change to "https://api.coralogix.us:443/api/v1/logs" for US cluster
+# Change to "https://api.app.coralogix.in:443/api/v1/logs" for IN cluster
+export CORALOGIX_URL ?= "https://api.coralogix.com:443/api/v1/logs" 
 
 functools:
 	@npm install -g azure-functions-core-tools@3 --unsafe-perm true
@@ -42,9 +47,9 @@ configure:
 	@az functionapp config appsettings set \
 		--name $(AZURE_FUNCTION_NAME) \
 		--resource-group $(AZURE_RESOURCE_GROUP) \
-		--settings "CORALOGIX_PRIVATE_KEY=$(CORALOGIX_PRIVATE_KEY)" "CORALOGIX_APP_NAME=$(CORALOGIX_APP_NAME)" "CORALOGIX_SUB_SYSTEM=$(CORALOGIX_SUB_SYSTEM)" "NEWLINE_PATTERN=$(NEWLINE_PATTERN)" "AzureWebJobsInputStorage=$(AZURE_STORAGE_CONNECTION)"
+        --settings "CORALOGIX_PRIVATE_KEY=$(CORALOGIX_PRIVATE_KEY)" "CORALOGIX_APP_NAME=$(CORALOGIX_APP_NAME)" "CORALOGIX_SUB_SYSTEM=$(CORALOGIX_SUB_SYSTEM)" "AzureWebJobsStorage=$(AZURE_STORAGE_CONNECTION)" "EventHubConnection=$(AZURE_EVENTHUB_CONNECTION)" "CORALOGIX_URL=$(CORALOGIX_URL)"
 
 publish: build
-	@func azure functionapp publish $(AZURE_FUNCTION_NAME)
+	@func azure functionapp publish $(AZURE_FUNCTION_NAME) --typescript
 
 all: functools clean install configure publish
