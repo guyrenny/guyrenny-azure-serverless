@@ -32,11 +32,11 @@ Depending on your region, you need to configure correct Coralogix url variable. 
 
 | Region  | Coralogix Endpoint                          |
 |---------|------------------------------------------|
-| USA1    | `https://api.coralogix.us:443/api/v1/logs`      |
-| APAC1   | `https://api.app.coralogix.in:443/api/v1/logs`  | 
-| APAC2   | `https://api.coralogixsg.com:443/api/v1/logs`   | 
-| EUROPE1 | `https://api.coralogix.com:443/api/v1/logs`     | 
-| EUROPE2 | `https://api.eu2.coralogix.com:443/api/v1/logs` | 
+| USA1 (Ohio)   | `https://api.coralogix.us:443/api/v1/logs`      |
+| APAC1 (Mumbai)  | `https://api.app.coralogix.in:443/api/v1/logs`  | 
+| APAC2 (Singapore)  | `https://api.coralogixsg.com:443/api/v1/logs`   | 
+| EUROPE1 (Ireland)| `https://api.coralogix.com:443/api/v1/logs`     | 
+| EUROPE2 (Stockholm)| `https://api.eu2.coralogix.com:443/api/v1/logs` | 
 
 ## Installation
 
@@ -53,11 +53,12 @@ Login with Azure cli:
 $ az login
 ```
 
-Install ``Azure Functions Core Tools``:
+Install ``Azure Functions Core Tools 4``:
 
 ```bash
 $ make functools
 ```
+Note: only install the Azure function tools if you dont already have it.  
 
 Configure environment variables with appropriate values and install ``Coralogix`` function for ``Azure Functions``:
 
@@ -65,7 +66,7 @@ Configure environment variables with appropriate values and install ``Coralogix`
 $ export AZURE_REGION=centralus # default is 'westeurope'
 $ export AZURE_FUNCTION_NAME=crxhub$(echo $RANDOM|head -c 5;echo;) # default is 'crxhub'
 $ export AZURE_RESOURCE_GROUP=crxrg$(echo $RANDOM|head -c 5;echo;) # default is 'crxrg'
-$ export AZURE_EVENTHUB_CONNECTION_STRING="<your_eventhub_namespace_primary_connection_string>" # not optional, be sure to use "..." for the export to work
+$ export AZURE_EVENTHUB_CONNECTION_STRING="<your_eventhub_namespace_primary_connection_string>" # not optional, be sure to use quotation marks for the export to work
 $ export CORALOGIX_PRIVATE_KEY=<your_coralogix_secret> # not optional
 $ export CORALOGIX_APP_NAME=<your_coralogix_app_name> # default is 'Azure'
 $ export CORALOGIX_SUB_SYSTEM=<your_coralogix_subsystem_name> # default is 'eventhub'
@@ -90,7 +91,7 @@ $ make delete
 
 ## EventHub
 
-By default ``EventHub`` function will be triggered when new events are shipped to the Hub named 
+By default ``EventHub`` function will be triggered when new events are shipped to a Hub named 
 ``coralogix``.
 
 To change the triggering eventhub name change the value of `bindings.eventHubName`.
