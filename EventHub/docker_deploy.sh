@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Add required variables for given integration to this string
-required_env_vars="QUEUE_STORAGE_ACCOUNT_CONNECTION_STRING AZURE_STORAGE_QUEUE_NAME CORALOGIX_PRIVATE_KEY AZURE_REGION"
+required_env_vars="EVENTHUB_SAS_POLICY_CONNECTION_STRING AZURE_EVENTHUB_NAME CORALOGIX_PRIVATE_KEY AZURE_REGION"
 
 #Function to validate required variables are set
 check_vars()
@@ -46,8 +46,8 @@ then
     export UUID=$(od -vN "7" -An -tx1 /dev/urandom|tr -d " \n"; echo)
     echo "Using $UUID as our uniqness seed for this deployment."
     #If storage queue name is not empty (changed from default of "logs"
-    echo "Monitored Storage Queue: $AZURE_STORAGE_QUEUE_NAME"
-    sed -i "s/logs/$AZURE_STORAGE_QUEUE_NAME/g" StorageQueue/function.json
+    echo "Monitored EventHub: $AZURE_EVENTHUB_NAME"
+    sed -i.bak "s/YOUR_EVENTHUB/$AZURE_EVENTHUB_NAME/g" EventHub/function.json
     echo "----- MAKE INSTALL -----"
     make install
     check_fault

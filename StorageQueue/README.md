@@ -12,7 +12,7 @@ The Azure Storage Queue integration allows parsing of queue messages in JSON for
 
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) version 2.44.0
 
-* [Node.js](https://nodejs.org/) version 18
+* [Node.js](https://nodejs.org/) version 16
 
 ## General
 
@@ -49,7 +49,8 @@ Configure (Replace environment variables with appropriate values) and install ``
 # A Unique Identifier to ensure successful deployment of resources with universally unique requirements
 export UUID=$(od -vN "7" -An -tx1 /dev/urandom|tr -d " \n"; echo)
 # Storage Account "Connection String"
-export AZURE_STORAGE_CONNECTION_STRING=<YOUR_STORAGE_ACCOUNT_CONNECTION_STRING>
+export QUEUE_STORAGE_ACCOUNT_CONNECTION_STRING=<YOUR_STORAGE_ACCOUNT_CONNECTION_STRING>
+
 # Private key for Coralogix
 export CORALOGIX_PRIVATE_KEY=YOUR_PRIVATE_KEY
 # Desired Application name and Subsystem name for ingested Storage Queue messages
