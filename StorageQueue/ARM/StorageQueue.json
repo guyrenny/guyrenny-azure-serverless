@@ -51,6 +51,17 @@
       "metadata": {
         "description": "The name of the storage queue."
       }
+    },
+    "FunctionAppServicePlanType": {
+      "type": "string",
+      "defaultValue": "Consumption",
+      "allowedValues": [
+        "Consumption",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "The type of the Function App Service Plan. Choose Premium if you need vNet Support."
+      }
     }
   },
   "variables": {
@@ -60,7 +71,8 @@
     "applicationInsightsName": "[variables('functionAppName')]",
     "storageAccountName": "[format('azfunctions{0}', uniqueString(resourceGroup().id))]",
     "location": "[resourceGroup().location]",
-    "packageUri": "https://coralogix-public.s3.eu-west-1.amazonaws.com/azure-functions-repo/StorageQueue.zip"
+    "packageUri": "https://coralogix-public.s3.eu-west-1.amazonaws.com/azure-functions-repo/StorageQueue.zip",
+    "sku": "[if(equals(parameters('FunctionAppServicePlanType'), 'Consumption'), 'Y1', 'EP1')]"
   },
   "resources": [
     {
@@ -79,13 +91,11 @@
       "name": "[variables('hostingPlanName')]",
       "location": "[variables('location')]",
       "sku": {
-        "name": "Y1",
-        "tier": "Dynamic",
-        "size": "Y1",
-        "family": "Y"
+        "name": "[variables('sku')]",
+        "tier": "[if(equals(parameters('FunctionAppServicePlanType'), 'Consumption'), 'Dynamic', 'ElasticPremium')]"
       },
       "properties": {
-        "computeMode": "Dynamic"
+        "reserved": true
       }
     },
     {
@@ -106,10 +116,11 @@
       "apiVersion": "2022-03-01",
       "name": "[variables('functionAppName')]",
       "location": "[variables('location')]",
-      "kind": "functionapp",
+      "kind": "functionapp,linux",
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "siteConfig": {
+          "linuxFxVersion": "Node|18",
           "appSettings": [
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -136,12 +147,8 @@
               "value": "node"
             },
             {
-              "name": "WEBSITE_NODE_DEFAULT_VERSION",
-              "value": "~16"
-            },
-            {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "1"
+              "value": "[variables('packageUri')]"
             },
             {
               "name": "CORALOGIX_PRIVATE_KEY",
@@ -174,17 +181,6 @@
         "[resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))]",
         "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Web/sites/extensions",
-      "apiVersion": "2022-03-01",
-      "name": "[format('{0}/{1}', variables('functionAppName'), 'zipdeploy')]",
-      "properties": {
-        "packageUri": "[variables('packageUri')]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
       ]
     }
   ]
