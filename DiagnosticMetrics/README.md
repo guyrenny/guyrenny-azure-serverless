@@ -15,7 +15,7 @@ It presently handles only the "allMetrics" metrics format. Support for additiona
 ## Azure Resource Manager Template Deployment
 
 The Diagnostic Metrics integration can be deployed by clicking the link below and signing into your Azure account:
-[Deploy to Azure](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcoralogix%2Fcoralogix-azure-serverless%2FDiagnosticMetrics%2FARM%2FDiagnosticMetrics.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcoralogix%2Fcoralogix-azure-serverless%2Fmaster%2FDiagnosticMetrics%2FARM%2FDiagnosticMetrics.json)
 
 ## Terraform Deployment
 
