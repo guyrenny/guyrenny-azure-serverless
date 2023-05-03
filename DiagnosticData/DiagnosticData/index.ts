@@ -20,14 +20,30 @@ import { AzureFunction, Context } from "@azure/functions";
 const eventHubTrigger: AzureFunction = async function (context: Context, eventHubMessages: any): Promise<void> {
     context.log(`JavaScript eventhub trigger function called for message array ${eventHubMessages}`);
 
-    const url = process.env.CORALOGIX_URL || 'https://api.coralogix.com/api/v1/logs'
+    const url = process.env.CORALOGIX_URL || 'https://ingress.coralogix.com/api/v1/logs'
     const key = process.env.CORALOGIX_PRIVATE_KEY || "INVALID_KEY"
     const applicationName = process.env.CORALOGIX_APP_NAME || "NO_APPLICATION"
     const subsystemName = process.env.CORALOGIX_SUB_SYSTEM || "NO_SUBSYSTEM"
-    const response = postData(url, key, applicationName, subsystemName, {'eventHubMessages': eventHubMessages.map(s => JSON.parse(s)) });
+    const response = postData(url, key, applicationName, subsystemName, {'eventHubMessages': eventHubMessages.map(parseJSON) });
     context.log(`Sent messages. Response: ${JSON.stringify(response)}`);
 
 };
+
+// This function is to address an Azure bug where single quotes are used in the diagnostic log messages
+// for Linux consumption plan resulting in invalid JSON. https://github.com/Azure/azure-functions-host/issues/7864
+function parseJSON(data: any): any {
+    try {
+        return JSON.parse(data);
+    } catch (error) {
+        if (error instanceof SyntaxError) {
+            // Replace single quotes with double quotes not preceded by a backslash
+            return JSON.parse(data.replace(/(?<!\\)'/g, '"'))
+        } else {
+            console.error(error);
+            throw error
+        }
+    }
+}
 
 async function postData(url: string, privateKey: string, applicationName: string, subsystemName: string, data: any) {
     if( !privateKey) {
