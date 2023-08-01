@@ -3,6 +3,11 @@ on:
   pull_request:
     types: [opened, synchronize]
     branches: [master]
+    paths: 
+      - "BlobViaEventGrid/*"
+      - "DiagnosticData/*"
+      - "EventHub/*"
+      - "StorageQueue/*"
 
 jobs:
   get-label:
