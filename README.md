@@ -11,4 +11,3 @@ We provide several trigger strategies, please select one and follow the inner RE
 ---
 info@coralogix.com
 Coralogix 2022
-
