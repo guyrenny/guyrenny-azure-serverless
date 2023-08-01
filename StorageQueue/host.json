@@ -6,7 +6,7 @@
         "isEnabled": true,
         "excludedTypes": "Request"
       }
-    }
+    }x
   },
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
