@@ -39,5 +39,7 @@ jobs:
         read -ra changed_files_array <<< "$changed_files_string"
         chmod +x scripts/changelog_check.sh
         for changed_file in "${changed_files_array[@]}"; do
-          scripts/changelog_check.sh $(dirname $changed_file)
+          if [[ "$changed_file" == "BlobViaEventGrid/"* ]] || [[ "$changed_file" == "DiagnosticData/"* ]] || [[ "$changed_file" == "EventHub/"* ]] || [[ "$changed_file" == "StorageQueue/"* ]] || ; then
+            scripts/changelog_check.sh $(dirname $changed_file)
+          fi
         done
