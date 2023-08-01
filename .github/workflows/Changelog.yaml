@@ -40,6 +40,6 @@ jobs:
         chmod +x scripts/changelog_check.sh
         for changed_file in "${changed_files_array[@]}"; do
           if [[ "$changed_file" == "BlobViaEventGrid/"* ]] || [[ "$changed_file" == "DiagnosticData/"* ]] || [[ "$changed_file" == "EventHub/"* ]] || [[ "$changed_file" == "StorageQueue/"* ]]; then
-            scripts/changelog_check.sh $(dirname $changed_file)
+            scripts/changelog_check.sh  $(echo "$changed_file)" | cut -d "/" -f1)
           fi
         done
